@@ -7,3 +7,5 @@ admin.site.register(Atrocity)
 admin.site.register(Category)
 admin.site.register(NonProfit)
 admin.site.register(Country)
+
+    
