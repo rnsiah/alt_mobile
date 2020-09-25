@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
 from django.template.defaultfilters import slugify
+from django.db.models.signals import pre_save
 
 
 
@@ -12,7 +13,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-
+ 
 
 class Country(models.Model):
     name= models.CharField( max_length=50, blank=False, null=False)
@@ -50,18 +51,21 @@ class Shirt(models.Model):
     original_image = models.ImageField(upload_to='media/media/shirts', height_field=None, width_field=None, max_length=None)
     Atrocity = models.ForeignKey(Atrocity, on_delete=models.CASCADE, blank = True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    slug = models.SlugField(unique = True)
+    slug = models.SlugField(unique = True, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
-    def slug(self):
-        return slugify(self.name)
+  
     
     def get_absolute_url(self):
-        return reverse("Alt:Shirt", kwargs={"slug": self.slug})
+        return reverse("Alt:shirts", kwargs={"slug": self.slug})
 
-    
+def slug_generator(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug='SLUG'
+
+pre_save.connect(slug_generator, sender=Shirt)    
     
 
 
@@ -80,8 +84,7 @@ class NonProfit(models.Model):
     def __str__(self):
         return self.name
 
-    def slug(self):
-        return slugify(self.name)
+    
 
 
 

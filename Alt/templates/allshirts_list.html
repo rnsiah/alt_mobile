@@ -1,0 +1,11 @@
+{% extends 'base.html' %} 
+
+{% block content %} 
+
+{% for shirt in object_list %}
+<h1>{{ shirt.name }}</h1>
+<a href="{{ shirt.get_absolute_url }}">See Shirt</a>
+
+</center>
+{% endfor %}
+{% endblock content %}

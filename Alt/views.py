@@ -17,5 +17,16 @@ class ShirtList(ListView):
 def view_shirt(request, slug):
   shirt = get_object_or_404(Shirt, slug=slug)
 
-  return render(request, 'shirts.html',{ 'shirt':shirt} )
+  return render(request, 'shirt.html',{'shirt':shirt} )
 
+
+
+class NonProfitList(ListView):
+  model = NonProfit
+  template_name = 'nonprofit_list.html'
+
+
+def view_nonProfit(request, slug):
+  nonprofit = get_object_or_404(NonProfit, slug=slug)
+
+  return render(request,'nonprofit.html', {'nonprofit':nonprofit} )
