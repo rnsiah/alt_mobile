@@ -7,8 +7,8 @@ verify_ssl = true
 
 [packages]
 django-allauth = "*"
-pillow = "*"
 djangorestframework = "*"
+pillow = "*"
 qrcode = "*"
 
 [requires]

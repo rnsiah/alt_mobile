@@ -2,17 +2,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from io import BytesIO
+from django.core import files
+#import qrcode
+#from PIL import Image, Draw
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500, blank=True)
     birth_date= models.DateField(blank=True, null=True)
     location = models.CharField(max_length=50, blank=True)
+    #qr_code= models.ImageField(_(""), upload_to=None, height_field=None, width_field=None, max_length=None)
     
     
     def __str__(self):
         return self.user
-    
 
 # Create your models here.
 

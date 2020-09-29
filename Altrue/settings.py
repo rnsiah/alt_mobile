@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'api',
     'rest_framework',
+    
 
 ]
 
