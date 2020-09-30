@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django-heroku # add in the beginning
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
     
 
 ]
@@ -88,6 +91,14 @@ AUTHENTICATION_BACKENDS = [
     
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 WSGI_APPLICATION = 'Altrue.wsgi.application'
 
@@ -146,3 +157,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SITE_ID=1
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+django_heroku.settings(locals())
