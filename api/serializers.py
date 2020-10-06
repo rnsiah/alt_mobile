@@ -1,26 +1,51 @@
 from rest_framework import serializers
-from  Alt.models import Shirt, Atrocity, NonProfit
+from  Alt.models import Shirt, Atrocity, NonProfit, Category
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueTogetherValidator
 
 
 
+
+class CategorySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Category
+        fields=['name', 'image','information']
+
+
 class ShirtSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Shirt
-    fields = ['id', 'name', 'price', 'country', 'shirt_image','Atrocity', 'category', 'slug']
+    Atrocity=serializers.StringRelatedField()
+    category=serializers.StringRelatedField()
+    country=serializers.StringRelatedField()
+    
+    
+
+    class Meta:
+        model = Shirt
+        fields = ['id', 'name', 'price', 'country', 'shirt_image','Atrocity', 'category', 'slug']
+
+  
 
 
 class AtrocitySerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Atrocity
-    fields = ['title', 'region', 'info', 'image_url', 'category','country','slug' ]
+
+    category=serializers.StringRelatedField()
+
+
+    class Meta:
+        model = Atrocity
+        fields = ['title', 'region', 'info', 'image_url', 'category','country','slug' ]
+
+
 
 
 class NonProfitSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = NonProfit
-    fields = ['name','logo', 'description', 'year_started', 'mission_statement','vision_statement','website_url','category','slug']
+
+    category=serializers.StringRelatedField()
+    
+    class Meta:
+        model = NonProfit
+        fields = ['name','logo', 'description', 'year_started', 'mission_statement','vision_statement','website_url','category','slug']
 
 
 

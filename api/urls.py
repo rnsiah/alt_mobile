@@ -9,5 +9,6 @@ urlpatterns = [
   path('shirts', views.ShirtList.as_view()),
   path('atrocities', views.AtrocityList.as_view()),
   path('nonprofits', views.NonProfitList.as_view()),
+  path('categories', views.CategoryList.as_view()),
     
 ]

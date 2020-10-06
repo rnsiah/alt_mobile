@@ -18,7 +18,7 @@ class Profile(models.Model):
     
     
     def __str__(self):
-        return self.user
+        return self.user.username
 
 # Create your models here.
 
@@ -30,3 +30,9 @@ def createUserProfile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def saveUserProfile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+
+class Balance(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    balance = models.IntegerField(default=0)

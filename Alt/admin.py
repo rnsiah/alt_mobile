@@ -5,7 +5,8 @@ from .models import Shirt, Atrocity, Category, NonProfit, Country
 
 
 class ShirtAdmin(admin.ModelAdmin):
-     prepopulated_fields = {'slug': ('name',)} 
+    list_display =('name',)
+    prepopulated_fields = {'slug': ('name',)} 
 
 admin.site.register(Shirt, ShirtAdmin)
 

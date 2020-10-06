@@ -5,6 +5,7 @@ from .models import Shirt, Atrocity, NonProfit
 
 def home(request):
   return render (request, 'landing.html')
+  
 
 
 
@@ -30,3 +31,5 @@ def view_nonProfit(request, slug):
   nonprofit = get_object_or_404(NonProfit, slug=slug)
 
   return render(request,'nonprofit.html', {'nonprofit':nonprofit} )
+
+

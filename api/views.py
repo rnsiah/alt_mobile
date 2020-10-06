@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from .serializers import ShirtSerializer, NonProfitSerializer, AtrocitySerializer, UserSerializer
-from Alt.models import Shirt, NonProfit, Atrocity
+from .serializers import ShirtSerializer, NonProfitSerializer, AtrocitySerializer, UserSerializer, CategorySerializer
+from Alt.models import Shirt, NonProfit, Atrocity, Category
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
@@ -19,6 +19,11 @@ class NonProfitList(generics.ListAPIView):
 class AtrocityList(generics.ListAPIView):
   serializer_class = AtrocitySerializer
   queryset= Atrocity.objects.all()
+
+class CategoryList(generics.ListAPIView):
+  serializer_class = CategorySerializer
+  queryset= Category.objects.all()
+
 
 
 
@@ -52,3 +57,5 @@ class UserRecordView(APIView):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+

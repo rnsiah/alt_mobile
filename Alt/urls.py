@@ -10,7 +10,9 @@ urlpatterns = [
     path('all_nonprofits', NonProfitList.as_view(), name='nonprofit_list'),
     path('nonprofit/<slug>', view_nonProfit, name='nonprofit' )
     
+    
    
 ]
+
 
 

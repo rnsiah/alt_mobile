@@ -7,8 +7,19 @@ from django.db.models.signals import pre_save
 
 
 
+
+    
+
+ 
+
+
+
+
+
 class Category(models.Model):
     name = models.CharField(max_length = 50, blank=False, null=False)
+    image = models.ImageField( upload_to='media/media/causeImages', height_field=None, width_field=None, max_length=None)
+    information =models.TextField()
 
     def __str__(self):
         return self.name
