@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import redirect
 from .forms import UserForm, ProfileForm
-from .models import User, Profile
+from .models import User, Profile, Balance
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+
 
 
 @login_required
@@ -32,9 +33,13 @@ def update_profile(request):
 
 def user_profile(request, username):
     user = User.objects.get(username=username)
+    balance = User.balance.get(balance = balance)
     context = {
-       "user": user
+       "user": user,
+       'balance':balance
     }
 
 
     return render(request, 'user_profile.html', context)
+
+

@@ -19,11 +19,19 @@ from users import views as userviews
 from django.urls import path, include
 import users
 import Alt
+from rest_framework.authtoken import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('profile/', include('users.urls')),
     path('', include('Alt.urls')),
+    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+
+
+
+    #API
+    path('api/', include('api.urls', namespace='api')),
 
 ]
+
