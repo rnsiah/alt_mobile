@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:core';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/session_event_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/session_state.dart';
@@ -22,7 +25,7 @@ class SessionBLoc extends Bloc<SessionEvent, SessionState> {
       } else
         showAuthProcess();
     } catch (e) {
-      print(e);
+      print(e); 
     }
   }
 
@@ -65,9 +68,38 @@ class SessionBLoc extends Bloc<SessionEvent, SessionState> {
 
   @override
   Stream<SessionState> mapEventToState(SessionEvent event) async* {
-    if (event is LoggedIn) {
-      User user = (await userRepository.userDao.getCurrentUser(0))!;
-      emit(AuthenticatedWithoutProfile(user: user));
+    if (event is Apploaded) {
+      yield* _mapAppLoadedToState(event);
     }
+    if (event is LoggedIn) {
+      yield* _mapUserLoggedInToState(event);
+    }
+    if (event is LoggedOut) {
+      _mapUserLoggedOutToState(event);
+    }
+  }
+
+  Stream<SessionState> _mapAppLoadedToState(Apploaded event) async* {
+    yield AuthtLoading();
+    try {
+      await Future.delayed(Duration(milliseconds: 700));
+      final currentUser = await userRepository.userDao.getCurrentUser(0);
+      if (currentUser != null) {
+        yield Authenticated(user: currentUser);
+      } else {
+        yield Unauthenticated();
+      }
+    } catch (e) {
+      yield AuthFailure(message: e.toString());
+    }
+  }
+
+  Stream<SessionState> _mapUserLoggedInToState(LoggedIn event) async* {
+    yield Authenticated(user: event.user);
+  }
+
+  Stream<SessionState> _mapUserLoggedOutToState(LoggedOut event) async* {
+    signOut();
+
   }
 }

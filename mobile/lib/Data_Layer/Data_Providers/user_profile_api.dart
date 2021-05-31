@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:mobile/Data_Layer/Models/user_model.dart';
 
 class ApiProvider {
-  final String _baseUrl = "https://localhost:8000/";
+  final String _baseUrl = "http://localhost:8000/";
 
   Future<dynamic> getUserAuthenticatedData(
       String url, String key, int altId) async {
@@ -74,7 +74,7 @@ class ApiProvider {
 }
 
 class NonAuthenticatedApiProvider {
-  final String _baseUrl = "https://localhost:8000/";
+  final String _baseUrl = "http://localhost:8000/";
 
   Future<dynamic> get(String url) async {
     var responseJson;

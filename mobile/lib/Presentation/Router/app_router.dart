@@ -6,10 +6,13 @@ import 'package:mobile/Data_Layer/Blocs/validationCubit.dart';
 import 'package:mobile/Presentation/Forms/user_login_form.dart';
 import 'package:mobile/Presentation/Screens/confirmation_screen.dart';
 import 'package:mobile/Presentation/Screens/signup_screen.dart';
+import 'package:mobile/Presentation/Screens/userProfile_fillScreen.dart';
 
 
 
 class AuthNavigator extends StatelessWidget {
+  
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ValidationCubit, ValidationState>(
@@ -29,7 +32,10 @@ class AuthNavigator extends StatelessWidget {
             if (state == ValidationState.confirmSignUp )
             MaterialPage(child: ConfirmationScreen()),
 
-           
+            if(state == ValidationState.userProfileIncomplete)
+            MaterialPage(child: UserProfileComplete(
+              
+            )),
             ]
             
 

@@ -14,10 +14,23 @@ class ProfileBeingCompleted extends SessionEvent {
   List<Object> get props => [user, profileCompletion];
 }
 
+class Apploaded extends SessionEvent{
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class LoggedIn extends SessionEvent {
   final User user;
 
   LoggedIn({required this.user});
 
   List<Object> get props => [user];
+}
+
+class LoggedOut extends SessionEvent{
+  @override
+  
+  List<Object?> get props => throw UnimplementedError();
+  
+  
 }

@@ -1,54 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/atrocity_bloc/bloc/atrocity_bloc_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/session_cubit.dart';
+import 'package:mobile/Data_Layer/Models/atrocity_model.dart';
 import 'package:mobile/Data_Layer/Models/user_model.dart';
 
 class HomePage extends StatelessWidget {
   final User user;
+  PageController _pageController = PageController();
+  static List<Atrocity> featuredAtrocity = [];
 
-  const HomePage({Key? key, required this.user}) : super(key: key);
+  HomePage({Key? key, required this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: _profileDrawer(),
-      appBar: AppBar(
-        
-        backgroundColor: Colors.black,
-        elevation: 0,
-        title: Image(
-                image: AssetImage('images/Altrue Logo White.png'),
-              ),
-        // leading: IconButton(
-        //   padding: EdgeInsets.only(left: 7),
-        //   onPressed: () => print('Menu'),
-        //   icon: Icon(Icons.menu),
-        //   iconSize: 30,
-        //   color: Colors.black,
-        // ),
-        actions: <Widget>[
-          IconButton(
-            padding: EdgeInsets.only(right: 7),
-            onPressed: () => print('Search'),
-            icon: Icon(Icons.search),
-            iconSize: 30,
-            color: Colors.black,
+    return BlocProvider(
+      create: (context) => context.read<SessionBLoc>(),
+      child: Scaffold(
+        drawer: _profileDrawer(),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          title: Image(
+            image: AssetImage('images/Altrue Logo White.png'),
           ),
-        ],
-      ),
-      body: BlocProvider(
-        create: (context) => context.read<SessionBLoc>(),
-        child: Column(
+          actions: <Widget>[
+            IconButton(
+              padding: EdgeInsets.only(right: 7),
+              onPressed: () => print('Search'),
+              icon: Icon(Icons.search),
+              iconSize: 30,
+              color: Colors.black,
+            ),
+          ],
+        ),
+        body: Column(
           children: [
             Text('${user.altid}'),
             MaterialButton(
               onPressed: () => BlocProvider.of<SessionBLoc>(context).signOut(),
+            ),
+            BlocProvider(
+              create: (context) => context.read<AtrocityBlocBloc>(),
+              child: MaterialButton(
+                  child: Text(
+                    'Shirt Screen',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  onPressed: () {
+                    context.read<AtrocityBlocBloc>().add(AtrocityListFetched());
+                    Navigator.of(context).pushNamed('/atrocities');
+                  }),
             )
           ],
         ),
       ),
     );
   }
-     Widget _profileDrawer() {
+
+  Widget _profileDrawer() {
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: <Widget>[
       DrawerHeader(
@@ -109,6 +118,3 @@ class HomePage extends StatelessWidget {
     ]));
   }
 }
-
-
- 

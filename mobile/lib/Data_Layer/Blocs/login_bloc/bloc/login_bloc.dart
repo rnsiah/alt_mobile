@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mobile/Data_Layer/Blocs/session_cubit.dart';
+import 'package:mobile/Data_Layer/Blocs/session_event_bloc.dart';
 
 import 'package:mobile/Data_Layer/Models/user_model.dart';
 import 'package:mobile/Data_Layer/Repoositories/user_repository.dart';
@@ -29,9 +30,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         User user = await userRepository.authenticate(
             email: event.email, password: event.password);
-        
+
         yield state.copyWith(formStatus: SubmissionSuccess());
-        sessionBLoc.showUserProfileComplete(loggedInuser: user);
+        sessionBLoc.add(LoggedIn(user: user));
       } catch (e) {
         print(e);
         yield state.copyWith(formStatus: SubmissionFaiiled('exception'));
