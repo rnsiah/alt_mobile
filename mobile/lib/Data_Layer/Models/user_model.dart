@@ -1,8 +1,46 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'atrocity_model.dart';
 import 'non_profit_model.dart';
 import 'shirt_model.dart';
 
-class User {
+part 'user_model.g.dart';
+
+abstract class UUser {}
+
+@JsonSerializable()
+class UserFromAPI {
+  String url;
+  String email;
+  @JsonKey(includeIfNull: true, name: "first_name")
+  String firstname;
+  @JsonKey(name: "last_name")
+  String lastName;
+  @JsonKey(name: "username")
+  String userName;
+  int id;
+  String profile;
+  @JsonKey(name: "profile_created")
+  bool profileCreated;
+
+  UserFromAPI(
+      {required this.email,
+      required this.url,
+      required this.firstname,
+      required this.id,
+      required this.lastName,
+      required this.profile,
+      required this.profileCreated,
+      required this.userName});
+
+  factory UserFromAPI.fromJson(Map<String, dynamic> data) =>
+      _$UserFromAPIFromJson(data);
+
+  Map<String, dynamic> toJson() => _$UserFromAPIToJson(this);
+}
+
+@JsonSerializable()
+class User extends UUser {
   int id;
   String email;
   String key;
@@ -20,22 +58,13 @@ class User {
     return this.altid;
   }
 
-  factory User.fromDatabaseJson(Map<String, dynamic> data) => User(
-      id: data['id'],
-      email: data['email'],
-      key: data['key'],
-      altid: data['altid'],
-      hasProfile: data['hasProfile']);
+  factory User.fromDatabaseJson(Map<String, dynamic> data) =>
+      _$UserFromJson(data);
 
-  Map<String, dynamic> toDatabaseJson() => {
-        "id": this.id,
-        "email": this.email,
-        "key": this.key,
-        "altid": this.altid,
-        "hasProfile": this.hasProfile
-      };
+  Map<String, dynamic> toDatabaseJson() => _$UserToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class Profile {
   Profile({
     required this.username,
@@ -51,54 +80,35 @@ class Profile {
     required this.atrocityList,
     required this.nonProfitList,
   });
-  int user;
+  UserFromAPI user;
   String username;
+  @JsonKey(includeIfNull: false)
   String title;
   String dob;
+  @JsonKey(includeIfNull: false)
   String address;
+  @JsonKey(includeIfNull: false)
   String country;
+  @JsonKey(includeIfNull: false)
   String city;
+  @JsonKey(includeIfNull: false)
   String zip;
+  @JsonKey(includeIfNull: false, name: "qr_code_img")
   String qrCode;
+  @JsonKey(includeIfNull: false, name: 'shirt_list')
   List<Shirt> shirtList;
+  @JsonKey(includeIfNull: false, name: 'atrocity_list')
   List<Atrocity> atrocityList;
+  @JsonKey(includeIfNull: false, name: 'nonProfit_list')
   List<NonProfit> nonProfitList;
 
-  factory Profile.fromJson(Map<String, dynamic> json) => Profile(
-        user: json['user'],
-        username: json['username'],
-        title: json["title"],
-        dob: json["dob"],
-        address: json["address"],
-        country: json["country"],
-        city: json["city"],
-        zip: json["zip"],
-        qrCode: json["qr_code"],
-        shirtList:
-            List<Shirt>.from(json["shirt_list"].map((x) => Shirt.fromJson(x))),
-        atrocityList: List<Atrocity>.from(
-            json["atrocity_list"].map((x) => Atrocity.fromJson(x))),
-        nonProfitList:
-            List<NonProfit>.from(json["nonProfit_list"].map((x) => x)),
-      );
+  factory Profile.fromJson(Map<String, dynamic> data) =>
+      _$ProfileFromJson(data);
 
-  Map<String, dynamic> toJson() => {
-        'username': username,
-        "user": user,
-        "title": title,
-        "dob": dob,
-        "address": address,
-        "country": country,
-        "city": city,
-        "zip": zip,
-        "qr_code": qrCode,
-        "shirt_list": List<dynamic>.from(shirtList.map((x) => x.toJson())),
-        "atrocity_list":
-            List<dynamic>.from(atrocityList.map((x) => x.toJson())),
-        "nonProfit_list": List<dynamic>.from(nonProfitList.map((x) => x)),
-      };
+  Map<String, dynamic> toJson() => _$ProfileToJson(this);
 }
 
+@JsonSerializable()
 class ProfileCompletion {
   String username;
   String title;
@@ -117,13 +127,8 @@ class ProfileCompletion {
       required this.country,
       required this.zip});
 
-  Map<String, dynamic> toJson() => {
-    "username": this.username,
-    "title":this.title,
-    "dob":this.dob,
-    "address": this.address,
-    "city": this.city,
-    "country": this.country,
-    "zip":this.zip,
-  };
+  factory ProfileCompletion.fromJSon(Map<String, dynamic> data) =>
+      _$ProfileCompletionFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ProfileCompletionToJson(this);
 }

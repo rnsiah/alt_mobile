@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/form_submission_status.dart';
 import 'package:mobile/Data_Layer/Blocs/session_cubit.dart';
-import 'package:mobile/Data_Layer/Blocs/session_event_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/session_state.dart';
 import 'package:mobile/Data_Layer/Blocs/user_profile_edit_bloc.dart/user_profile_edit_event.dart';
 import 'package:mobile/Data_Layer/Blocs/user_profile_edit_bloc.dart/user_profile_edit_state.dart';
 import 'package:mobile/Data_Layer/Models/user_model.dart';
@@ -35,14 +35,40 @@ class UserProfileEditBloc
       yield state.copyWith(username: event.username);
     } else if (event is UserProfileCompleted) {
       yield state.copyWith(formstatus: FormSubmitting());
-      try {
-        User user = await userRepository.updateProfile(
-            user: sessionBLoc.user, profile: event.profile);
-        await userRepository.userDao.updateProfile();
-        sessionBLoc.add(LoggedIn(user: user));
-      } catch (e) {
-        print(e);
-        yield state.copyWith(formstatus: SubmissionFaiiled('exception'));
+
+      print("profile username: " +
+          event.profile.username +
+          " " +
+          "profile address: " +
+          event.profile.address +
+          " " +
+          "profile city: " +
+          event.profile.city +
+          " " +
+          "profile dob: " +
+          event.profile.dob +
+          " "
+              "profile country:" +
+          event.profile.country);
+
+      User? user = await userRepository.userDao.getCurrentUser(0);
+      ProfileCompletion profileComplete = event.profile;
+      if (user != null) {
+        try {
+          await userRepository.updateProfile(
+              user: user, profile: profileComplete);
+          User updatedUser = await userRepository.getUpdatedUserFromApi(user);
+          await userRepository.userDao.updateUser(updatedUser);
+          yield state.copyWith(formstatus: SubmissionSuccess());
+          Profile profile = await userRepository.getProfileFromApi(user: user);
+          sessionBLoc.emit(AuthenticatedWithProfile(
+              profile: profile, user: user, status: ProfileComplete.complete));
+        } catch (e) {
+          print(e);
+          yield state.copyWith(formstatus: SubmissionFaiiled('exception'));
+        }
+      } else {
+        sessionBLoc.emit(Authenticated(user: user!));
       }
     }
   }

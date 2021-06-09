@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,9 +13,11 @@ import 'package:mobile/Data_Layer/Repoositories/user_repository.dart';
 
 class UserProfileComplete extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  
+  final User user;
 
- 
+  UserProfileComplete({
+    Key? key, required this.user,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +47,19 @@ class UserProfileComplete extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              
-              Text('Welcome To Altrue Global', style: TextStyle(color:Colors.white),),
-              SizedBox(height: 20,),
-              Text('Complete Your Altrue Profile', style:TextStyle(fontSize:10, color:Colors.amber )),
+              Text(
+                'Welcome To Altrue Global',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text('Complete Your Altrue Profile',
+                  style: TextStyle(fontSize: 10, color: Colors.amber)),
+                  MaterialButton(
+                    child: Text('Sign Out', style: TextStyle(color: Colors.amber),),
+              onPressed: () => BlocProvider.of<SessionBLoc>(context).signOut(),
+            ),
               _profileForm(),
             ],
           ),

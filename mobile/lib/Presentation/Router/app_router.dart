@@ -31,11 +31,6 @@ class AuthNavigator extends StatelessWidget {
 
             if (state == ValidationState.confirmSignUp )
             MaterialPage(child: ConfirmationScreen()),
-
-            if(state == ValidationState.userProfileIncomplete)
-            MaterialPage(child: UserProfileComplete(
-              
-            )),
             ]
             
 

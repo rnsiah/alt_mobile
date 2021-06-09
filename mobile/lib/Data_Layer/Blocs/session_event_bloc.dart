@@ -19,6 +19,8 @@ class Apploaded extends SessionEvent{
   List<Object?> get props => throw UnimplementedError();
 }
 
+
+
 class LoggedIn extends SessionEvent {
   final User user;
 

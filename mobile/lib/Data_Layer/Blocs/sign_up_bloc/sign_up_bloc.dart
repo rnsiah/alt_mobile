@@ -37,12 +37,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             email: event.email,
             password1: event.password1,
             password2: event.password2);
-        await userRepository.persistToken(user: user);
-
         yield state.copyWith(formStatus: SubmissionSuccess());
-        validationCubit.showConfirmSignUp(
-            email: event.email, password: event.password1);
-        validationCubit.logIn(user);
+        validationCubit.showUserProfileCompletion(user);
+        
       } catch (e) {
         yield state.copyWith(
             formStatus: SubmissionFaiiled('Your Submission Failed '));

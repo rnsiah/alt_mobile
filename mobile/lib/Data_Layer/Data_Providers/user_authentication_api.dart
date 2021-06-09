@@ -35,7 +35,7 @@ Future<Key> getKeyFromSignUp(UserSignUpLoginIn userSignUpLoginIn) async {
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(userSignUpLoginIn.toDatabaseJson()),
+    body: jsonEncode(userSignUpLoginIn.toJson()),
   );
   if (response.statusCode == 200) {
     return Key.fromJson(json.decode(response.body));

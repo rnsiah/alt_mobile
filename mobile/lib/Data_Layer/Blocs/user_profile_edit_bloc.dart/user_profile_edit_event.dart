@@ -92,11 +92,20 @@ class UserProfileNonProfitListChange extends UserProfileEditEvent {
   List<Object?> get props => [nonProfitList];
 }
 
+class UserProfileBegin extends UserProfileEditEvent {
+  final User user;
+
+  UserProfileBegin({required this.user});
+  
+  @override
+  
+  List<Object> get props => [user];
+}
+
 class UserProfileCompleted extends UserProfileEditEvent {
   final ProfileCompletion profile;
 
-  UserProfileCompleted(
-      {required this.profile});
+  UserProfileCompleted({required this.profile});
   List<Object> get props => [profile];
 }
 

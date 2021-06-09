@@ -16,9 +16,9 @@ class ApiProvider {
 
     try {
       final response = await http.get(
-        Uri.parse(_baseUrl + url + '/$altId'),
+        Uri.parse(_baseUrl + url + '/$altId'+'/'),
         headers: {
-          HttpHeaders.authorizationHeader: '$key',
+           "Authorization": "Token $key",
         },
       );
       responseJson = _response(response);
@@ -37,7 +37,7 @@ class ApiProvider {
       final response = await http.put(Uri.parse(_baseUrl + url),
           headers: {
             "Content-Type": "application/json",
-            HttpHeaders.authorizationHeader: '$key'
+             "Authorization": "Token $key",
           },
           body: body);
       print(response);

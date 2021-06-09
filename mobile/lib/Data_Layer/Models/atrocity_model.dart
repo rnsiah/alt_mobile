@@ -1,6 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'category_model.dart';
 import 'country_model.dart';
 
+part 'atrocity_model.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Atrocity {
   Atrocity(
       {required this.id,
@@ -16,6 +21,7 @@ class Atrocity {
   String title;
   String region;
   String info;
+  @JsonKey(name: 'image_url')
   String imageUrl;
   List<Category> category;
   Country country;
@@ -23,28 +29,8 @@ class Atrocity {
   String videoURL;
   int id;
 
-  factory Atrocity.fromJson(Map<String, dynamic> json) => Atrocity(
-        id: json['id'],
-        title: json["title"],
-        region: json["region"],
-        info: json["info"],
-        imageUrl: json["image_url"],
-        videoURL: json['videoURL'],
-        category: List<Category>.from(
-            json["category"].map((x) => Category.fromJson(x))),
-        country: Country.fromJson(json["country"]),
-        slug: json["slug"],
-      );
+  factory Atrocity.fromJson(Map<String, dynamic> data) =>
+      _$AtrocityFromJson(data);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        "title": title,
-        "region": region,
-        "info": info,
-        "image_url": imageUrl,
-        "category": List<dynamic>.from(category.map((x) => x.toJson())),
-        "country": country.toJson(),
-        "slug": slug,
-        'videoURL': videoURL
-      };
+  Map<String, dynamic> toJson() => _$AtrocityToJson(this);
 }

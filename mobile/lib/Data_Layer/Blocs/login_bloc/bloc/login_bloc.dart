@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         User user = await userRepository.authenticate(
             email: event.email, password: event.password);
-
+        
         yield state.copyWith(formStatus: SubmissionSuccess());
         sessionBLoc.add(LoggedIn(user: user));
       } catch (e) {

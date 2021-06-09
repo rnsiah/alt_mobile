@@ -1,6 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/session_cubit.dart';
+import 'package:mobile/Data_Layer/Blocs/user_profile_edit_bloc.dart/user_profile_edit_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/user_profile_edit_bloc.dart/user_profile_edit_event.dart';
+import 'package:mobile/Data_Layer/Blocs/user_profile_edit_bloc.dart/user_profile_edit_state.dart';
 import 'package:mobile/Data_Layer/Models/user_model.dart';
+import 'package:mobile/Data_Layer/Repoositories/user_repository.dart';
 
 enum ValidationState {
   login,
@@ -11,11 +15,15 @@ enum ValidationState {
 }
 
 class ValidationCubit extends Cubit<ValidationState> {
-  ValidationCubit({required this.sessionBloc}) : super(ValidationState.login);
+  ValidationCubit({required this.sessionBloc, required this.userRepository, required this.userProfileEditBloc})
+      : super(ValidationState.login);
 
+  UserRepository userRepository;
   SessionBLoc sessionBloc;
+  UserProfileEditBloc userProfileEditBloc;
 
   ValidationCredentials? credentials;
+  User? user;
 
   void showLogin() => emit(ValidationState.login);
   void showSignUp() => emit(ValidationState.signup);
@@ -30,8 +38,10 @@ class ValidationCubit extends Cubit<ValidationState> {
 
   void logIn(User user) => sessionBloc.logInUser(user: user);
 
-  void showUserProfileCompletion(User user) {
-    sessionBloc.showUserProfileComplete(loggedInuser: user);
+  void showUserProfileCompletion(User user) async {
+    userProfileEditBloc.add(UserProfileBegin(user: user));
+    sessionBloc.showProfileComplete(user: user);
+  
   }
 
   void launchSession(User user) => sessionBloc.showSession(user);

@@ -12,7 +12,7 @@ class AtrocityList extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Image(image:AssetImage('images/Altrue Logo White.png'),),backgroundColor: Colors.black),
         body: RepositoryProvider(
-            create: (context) => AtrocityRepository(),
+            create: (_) => AtrocityRepository(),
             child: BlocProvider(
                 create: (_) => context.read<AtrocityBlocBloc>(),
                 child: ListView(

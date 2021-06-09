@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/atrocity_bloc/bloc/atrocity_bloc_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/category_bloc/bloc/category_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/nonprofit_bloc/bloc/nonprofit_bloc.dart';
+import 'package:mobile/Data_Layer/Blocs/profile_bloc/bloc/profile_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/session_cubit.dart';
+import 'package:mobile/Data_Layer/Blocs/shirt_bloc/bloc/shirt_bloc.dart';
 import 'package:mobile/Data_Layer/Models/atrocity_model.dart';
 import 'package:mobile/Data_Layer/Models/user_model.dart';
+import 'package:mobile/Presentation/Widgets/profile_drawer.dart';
 
 class HomePage extends StatelessWidget {
   final User user;
-  PageController _pageController = PageController();
-  static List<Atrocity> featuredAtrocity = [];
+  final Profile profile;
 
-  HomePage({Key? key, required this.user}) : super(key: key);
+  HomePage({Key? key, required this.user, required this.profile}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => context.read<SessionBLoc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => context.read<SessionBLoc>(),
+        ),
+        BlocProvider(create: (context) => context.read<ProfileBloc>()),
+      ],
       child: Scaffold(
-        drawer: _profileDrawer(),
+        drawer:  ProfileDrawer(profile: profile),
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
@@ -42,79 +51,69 @@ class HomePage extends StatelessWidget {
             BlocProvider(
               create: (context) => context.read<AtrocityBlocBloc>(),
               child: MaterialButton(
+                  color: Colors.black,
                   child: Text(
-                    'Shirt Screen',
-                    style: TextStyle(fontSize: 24),
+                    'Atrocities',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                   onPressed: () {
                     context.read<AtrocityBlocBloc>().add(AtrocityListFetched());
                     Navigator.of(context).pushNamed('/atrocities');
                   }),
-            )
+            ),
+            BlocProvider(
+              create: (context) => context.read<ShirtBloc>(),
+              child: MaterialButton(
+                color: Colors.black,
+                child: Text(
+                  'Shirts',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+                onPressed: () {
+                  context.read<ShirtBloc>().add(FetchShirts());
+                  Navigator.of(context).pushNamed('/shirts');
+                },
+              ),
+            ),
+            MultiBlocProvider(
+                providers: [
+                  BlocProvider<NonprofitBloc>(
+                    create: (context) => context.read<NonprofitBloc>(),
+                  ),
+                  BlocProvider<CategoryBloc>(
+                      create: (context) => context.read<CategoryBloc>()),
+                ],
+                child: Column(children: [
+                  MaterialButton(
+                    color: Colors.black,
+                    child: Text(
+                      'Non Profits',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<CategoryBloc>().add(FetchCategory());
+                      context.read<NonprofitBloc>().add(FetchNonProfitList());
+                      Navigator.of(context).pushNamed('/nonprofits');
+                    },
+                  ),
+                  MaterialButton(
+                    child: Text(
+                      'Causes',
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    ),
+                    color: Colors.black,
+                    onPressed: () {
+                      context.read<CategoryBloc>().add(FetchCategory());
+                      Navigator.of(context).pushNamed('/causes');
+                    },
+                  )
+                ]))
           ],
         ),
       ),
     );
-  }
-
-  Widget _profileDrawer() {
-    return Drawer(
-        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-      DrawerHeader(
-        decoration: BoxDecoration(
-          color: Colors.black12,
-        ),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 45.0,
-              backgroundImage: null,
-            ),
-            Text('{Name}'),
-            Text('@Username')
-          ],
-        ),
-      ),
-      Card(
-        child: ListTile(
-          leading: Icon(Icons.person, color: Colors.black),
-          title: Text(
-            'My Profile',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          onTap: () => print('Taking You to my profile page'),
-        ),
-      ),
-      Card(
-        child: ListTile(
-          leading: Icon(Icons.favorite, color: Colors.black),
-          title: Text(
-            'My Causes',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          onTap: () => print('Taking You to my causes page'),
-        ),
-      ),
-      Card(
-        child: ListTile(
-            leading: Icon(Icons.camera, color: Colors.black),
-            title: Text(
-              'My Altrue Code',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            onTap: () {}),
-      ),
-      Card(
-        color: Colors.white,
-        child: ListTile(
-          leading: Icon(Icons.close, color: Colors.amber),
-          title: Text(
-            'Sign Out Now',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          onTap: () {},
-        ),
-      )
-    ]));
   }
 }

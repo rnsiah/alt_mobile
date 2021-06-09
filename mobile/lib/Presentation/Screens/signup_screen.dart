@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/Data_Layer/Blocs/form_submission_status.dart';
@@ -20,7 +22,8 @@ class SignUpScreen extends StatelessWidget {
         )),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(title: Image(image: AssetImage('images/Altrue Logo White.png'),
+          appBar: AppBar(backgroundColor: Colors.black,
+          title: Image(image: AssetImage('images/Altrue Logo White.png'),
           ),
           ),
           body: Container(
@@ -74,6 +77,7 @@ class SignUpScreen extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          style: TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold),
           decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white)),
@@ -92,6 +96,7 @@ class SignUpScreen extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          style: TextStyle(color: Colors.amber, fontSize: 16),
           obscureText: true,
           decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
@@ -112,6 +117,7 @@ class SignUpScreen extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          style: TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold),
           obscureText: true,
           decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(

@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'country_model.g.dart';
+
+@JsonSerializable()
 class Country {
   Country({
     required this.id,
@@ -9,15 +14,8 @@ class Country {
   String name;
   String flag;
 
-  factory Country.fromJson(Map<String, dynamic> json) => Country(
-    id: json["id"],
-    name: json["name"],
-    flag: json["flag"],
-  );
+  factory Country.fromJson(Map<String, dynamic> data) =>
+      _$CountryFromJson(data);
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "flag": flag,
-  };
+  Map<String, dynamic> toJson() => _$CountryToJson(this);
 }

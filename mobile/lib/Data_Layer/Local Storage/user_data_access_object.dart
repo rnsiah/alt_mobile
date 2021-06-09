@@ -35,33 +35,30 @@ class UserDao {
     }
   }
 
-  Future<bool> updateProfile() async {
-    final db = await dbProvider.database;
-    int doit = await db!.rawUpdate('''
-    UPDATE userTable
-    SET hasProfile = ?
-    WHERE id = ?
-    ''', [1, 0]);
-    if (doit == 1) {
-      return true;
-    } else {
-      return false;
+  Future<void> updateUser(User user) async {
+    if (user.hasProfile == 1) {
+      final db = await dbProvider.database;
+     await (db!.rawUpdate('''
+      UPDATE userTable
+      SET hasProfile = ?
+      WHERE _id = ?
+    ''', [1, 0]));
     }
+    
   }
 
-  Future<bool> checkIfProfileComplete() async {
+  Future<int> checkIfProfileComplete(int altid) async {
     final db = await dbProvider.database;
-    try {
-      List<Map> res =
-          await db!.rawQuery("SELECT * FROM User  WHERE hasProfile=1");
-      if (res.isNotEmpty) {
-        return true;
-      } else {
-        return false;
+    var res =
+        await db!.query(userTable, where: 'altid = ?', whereArgs: [altid]);
+    if (res.length > 0) {
+      User user = new User.fromDatabaseJson(res.first);
+      if (user.hasProfile == 1) {
+        return 1;
       }
-    } catch (e) {
-      return false;
-    }
+      return 0;
+    } else
+      return 0;
   }
 
   Future<bool> checkUser(int id) async {
@@ -75,6 +72,7 @@ class UserDao {
         return false;
       }
     } catch (error) {
+      print(error);
       return false;
     }
   }

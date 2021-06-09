@@ -1,6 +1,8 @@
 import 'package:mobile/Data_Layer/Models/user_model.dart';
 
-abstract class SessionState {}
+enum ProfileComplete { incomplete, complete }
+
+class SessionState {}
 
 class UnknownSessionState extends SessionState {}
 
@@ -8,19 +10,22 @@ class Unauthenticated extends SessionState {}
 
 class AuthtLoading extends SessionState {}
 
-class AuthenticatedWithoutProfile extends SessionState {
+class AuthenticatedWithProfile extends SessionState {
   User user;
-  AuthenticatedWithoutProfile({required this.user});
+  ProfileComplete status;
+  Profile profile;
+
+  AuthenticatedWithProfile({required this.profile ,required this.user, required this.status});
 }
 
 class Authenticated extends SessionState {
-  User user;
+  final User user;
+  final ProfileComplete status = ProfileComplete.incomplete;
+
   Authenticated({required this.user});
 }
 
 class AuthFailure extends SessionState {
   final String message;
   AuthFailure({required this.message});
-
-
 }

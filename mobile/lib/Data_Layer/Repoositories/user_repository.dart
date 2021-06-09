@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:mobile/Data_Layer/Data_Providers/user_authentication_api.dart';
@@ -21,14 +22,19 @@ class UserRepository {
   }) async {
     UserLogin userLogin = UserLogin(email: email, password: password);
     Key key = await getKey(userLogin);
-    User user = User(
+    bool beenloggedInbefore = await hasToken();
+    if (beenloggedInbefore) {
+      User loggedInUser = (await userDao.getCurrentUser(0))!;
+      return loggedInUser;
+    }
+    User user2 = User(
         id: 0,
         email: key.user.email,
         key: key.key,
         altid: key.user.altid,
-        hasProfile: 0);
-    await persistToken(user: user);
-    return user;
+        hasProfile: (key.user.profileCreated) ? 1 : 0);
+    await persistToken(user: user2);
+    return user2;
   }
 
 // Function that checks the local Databse on device to return  the altrue Id
@@ -66,7 +72,7 @@ class UserRepository {
         id: 0,
         key: key.key,
         altid: key.user.altid,
-        hasProfile: 0);
+        hasProfile: (key.user.profileCreated) ? 0 : 1);
     await persistToken(user: user);
 
     return user;
@@ -87,6 +93,22 @@ class UserRepository {
         hasProfile: 0);
 
     return user;
+  }
+
+  Future<User> getUpdatedUserFromApi(User user) async {
+    String key = user.key;
+    int altId = user.altid;
+    String url = 'api/users';
+    dynamic response =
+        await _apiProvider.getUserAuthenticatedData(url, key, altId);
+    UserFromAPI updateUser = UserFromAPI.fromJson(response);
+    User returnedUser = User(
+        email: updateUser.email,
+        altid: updateUser.id,
+        hasProfile: updateUser.profileCreated ? 1 : 0,
+        key: key,
+        id: user.id);
+    return returnedUser;
   }
 
   Future<void> confirmSignUpWithConfirmation({
@@ -110,36 +132,39 @@ class UserRepository {
     return result;
   }
 
-  Future<bool> checkIfUserHasProfile() async {
-    bool hasProfile = await userDao.checkIfProfileComplete();
-    var result = hasProfile ? true : false;
-    return result;
+  Future<bool> checkIfUserHasProfile(User user) async {
+    int check = await userDao.checkIfProfileComplete(user.altid);
+    if (check == 1) {
+      return true;
+    }
+    return false;
   }
 
-  Future<User> updateProfile({
+  Future<void> updateProfile({
     required User user,
     required ProfileCompletion profile,
   }) async {
-    String body = json.encode(profile);
-
     String keyOfUser = user.key;
     int altId = user.altid;
+    var love = {
+      "username": profile.username.toString(),
+      "title": profile.title.toString(),
+      "country": profile.country.toString(),
+      "city": profile.city.toString(),
+      "zip": profile.zip.toString(),
+      "address": profile.address.toString()
+    };
 
     final response = await http.patch(
       Uri.parse('http://localhost:8000/api/userprofiles/$altId/'),
       headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-         "Authorization": "Token $keyOfUser" 
-        
+        'Content-Type': 'application/json',
+        HttpHeaders.authorizationHeader: "Token $keyOfUser"
       },
-      body: body,
+      body: jsonEncode(love),
     );
 
-    if (response.statusCode == 204) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      userDao.updateProfile();
-      return user;
+    if (response.statusCode == 200) {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -148,13 +173,12 @@ class UserRepository {
   }
 
   Future<Profile> getProfileFromApi({required User user}) async {
-    
-    
     int id = user.altid;
-    String endpoint = '/userprofiles/$id/';
+    String endpoint = 'api/userprofile';
 
-    dynamic response = await _apiProvider.getUserAuthenticatedData(
-        endpoint, user.key, id);
+    dynamic response =
+        await _apiProvider.getUserAuthenticatedData(endpoint, user.key, id);
+    print(response);
     Profile profile = Profile.fromJson(response);
     return profile;
   }
